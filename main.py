@@ -7,7 +7,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def root():
+async def root():
     return {"message": "backend is running"}
 
 
