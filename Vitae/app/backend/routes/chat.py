@@ -1,0 +1,18 @@
+from fastapi import FastAPI, routing, APIRouter, Depends
+from app.backend.schemas.chat import ChatMessage, ChatRequest
+from app.externalservices.openai.openai_api import send_message
+import aiofiles
+
+router = APIRouter()
+
+
+@router.post("/chatsend", response_model=ChatMessage)
+async def chatsend(chat_request: ChatRequest):
+    async with aiofiles.open("app/core/prompt.txt", mode="r", encoding="utf-8") as f:
+        system_prompt = await f.read()
+    messages = [{"role": "system", "content": system_prompt}]
+    for message in chat_request.messages:
+        messages.append({"role": message.role, "content": message.content})
+
+    bot_reply = await send_message(messages)
+    return ChatMessage(role="assistant", content=bot_reply)
