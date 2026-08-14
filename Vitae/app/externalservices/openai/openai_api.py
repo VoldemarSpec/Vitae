@@ -3,6 +3,7 @@ import asyncio
 from openai import DefaultAioHttpClient
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 
