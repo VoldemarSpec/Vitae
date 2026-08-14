@@ -1,5 +1,7 @@
-from fastapi import FastAPI, routing, APIRouter, Depends
+from fastapi import FastAPI, routing, APIRouter, Depends, Request
 from pathlib import Path
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from Vitae.app.backend.schemas.chat import ChatMessage, ChatRequest
 from Vitae.app.externalservices.openai.openai_api import (
     send_message,
@@ -12,9 +14,12 @@ prompt_file_path = curent_dir.parents[2] / "core" / "prompt.txt"
 
 router = APIRouter()
 
+limiter = Limiter(key_func=get_remote_address)
+
 
 @router.post("/chatsend", response_model=ChatMessage)
-async def chatsend(chat_request: ChatRequest):
+@limiter.limit("5/minute")
+async def chatsend(request: Request, chat_request: ChatRequest):
     async with aiofiles.open(prompt_file_path, mode="r", encoding="utf-8") as f:
         system_prompt = await f.read()
     messages = [{"role": "system", "content": system_prompt}]
