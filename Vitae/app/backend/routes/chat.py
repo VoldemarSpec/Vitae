@@ -1,6 +1,9 @@
 from fastapi import FastAPI, routing, APIRouter, Depends
 from Vitae.app.backend.schemas.chat import ChatMessage, ChatRequest
-from Vitae.app.externalservices.openai.openai_api import send_message
+from Vitae.app.externalservices.openai.openai_api import (
+    send_message,
+    OpenAIIntegrationError,
+)
 import aiofiles
 
 router = APIRouter()
@@ -15,6 +18,16 @@ async def chatsend(chat_request: ChatRequest):
     messages = [{"role": "system", "content": system_prompt}]
     for message in chat_request.messages:
         messages.append({"role": message.role, "content": message.content})
-
-    bot_reply = await send_message(messages)
-    return ChatMessage(role="assistant", content=bot_reply)
+    try:
+        bot_reply = await send_message(messages)
+        return ChatMessage(role="assistant", content=bot_reply)
+    except OpenAIIntegrationError:
+        reply = (
+            "My connection to the OpenAI servers is currently unstable. 😅"
+            " But don't worry! You can always reach out to Volodymyr directly via email at"
+            " Vova.Spetcialny@gmail.com."
+        )
+        return ChatMessage(
+            role="assistant",
+            content=reply,
+        )
