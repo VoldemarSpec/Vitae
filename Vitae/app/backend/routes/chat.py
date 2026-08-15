@@ -8,13 +8,16 @@ from Vitae.app.externalservices.openai.openai_api import (
     OpenAIIntegrationError,
 )
 import aiofiles
+from Vitae.app.core.limiter import limiter
+
+
 
 curent_dir = Path(__file__).resolve()
 prompt_file_path = curent_dir.parents[2] / "core" / "prompt.txt"
 
 router = APIRouter()
 
-limiter = Limiter(key_func=get_remote_address)
+
 
 
 @router.post("/chatsend", response_model=ChatMessage)
