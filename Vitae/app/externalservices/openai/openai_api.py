@@ -4,7 +4,7 @@ from openai import DefaultAioHttpClient
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import logging
-
+from openai import OpenAIError
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,6 @@ async def send_message(messages: list) -> str:
             )
             return chat_completion.choices[0].message.content
 
-    except Exception as e:
+    except OpenAIError as e:
         logger.error(f"Failed to connect to OpenAI: {e}")
         raise OpenAIIntegrationError("OpenAI service is unavailable.")
