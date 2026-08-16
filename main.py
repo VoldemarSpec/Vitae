@@ -7,14 +7,19 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from Vitae.app.core.limiter import limiter
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://vitae-puce.vercel.app",
+        "https://spetsialnyi.me",
+        "https://www.spetsialnyi.me",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
