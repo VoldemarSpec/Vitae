@@ -9,12 +9,6 @@
         <div
           class="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold text-xl overflow-hidden shadow-lg shadow-sky-500/20"
         >
-          <img
-            src="./assets/profile-img.jpg"
-            alt="Profile"
-            class="w-full h-full object-cover"
-            @error="(e) => (e.target.style.display = 'none')"
-          />
           <span class="absolute text-sm">VS</span>
         </div>
         <div>
