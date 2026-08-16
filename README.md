@@ -14,7 +14,7 @@
 
 1. **User asks a question** via the frontend chat interface (e.g., _"What is your backend stack?"_).
 2. Frontend sends the chat history to the FastAPI backend.
-3. Backend prepends a securely cached **System Prompt** to enforce role boundaries and professional context.
+3. Backend prepends a securely stored **System Prompt** to enforce role boundaries and professional context.
 4. The request is processed by the **OpenAI API** (`gpt-4o-mini`).
 5. If OpenAI is unavailable, a graceful fallback response is returned with direct contact info.
 
@@ -47,7 +47,6 @@
 Built with production readiness in mind:
 
 - **Prompt Injection Protection:** Strict validation of user roles and content length via Pydantic model validators.
-- **Fail-Fast I/O:** The system prompt is read from the disk exactly once at startup and cached in memory to eliminate I/O bottlenecks.
 - **DDoS Protection:** Endpoint is protected by SlowAPI, limiting requests to 5 per minute per IP.
 - **Separation of Concerns:** Route handlers only process HTTP context, while business logic and external APIs are decoupled.
 
@@ -172,6 +171,7 @@ _Tests cover successful API responses, OpenAI fallback mechanisms, and validatio
 
 ## 🔮 Future Improvements
 
+- **In-memory prompt caching:** Read the system prompt once at startup to reduce disk I/O on every chat request.
 - Add persistent personal sessions (Auth).
 - Implement token streaming for real-time typing generation.
 - Add Docker Compose for a one-command setup.
